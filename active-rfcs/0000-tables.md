@@ -29,6 +29,8 @@ Below is the sample JSON representation of a `table` element
   "x": 100,
   "y": 100,
   "title": "Table Title",
+  "rows": 2,
+  "columns": 2,
   "cells": [
     {
       "id": "cell-1",
@@ -95,8 +97,17 @@ Below is the sample JSON representation of a `table` element
 
 ```
 
-A table will have a `title` as well.
+A table will have a `title` as well and the count of `rows` and `columns` as well.
 Each cell has a `tableId` to identify the `table` which it is connected to when interacting with the cell eg resizing, typing text etc.
+
+The table consists of `cells` defining the content of each cell.
+Each cell has an `id`, `x`, `y` and dimensions. Since when resizing the width and height of cells can be altered hence recording the dimensions of each cell.
+
+Each cell is connected to its table by `tableId`.
+
+The `row` and `column` helps in identifying the row and column indexes of the cell.
+
+Each cell has a `boundElements` to keep it in sync with text containers / labeled arrows, however we can surely rename it to `textId` to keep it simple.
 
 ## Adding and Deleting rows / columns
 
@@ -123,4 +134,22 @@ Since the table is not just a single element but a collection of different eleme
 
 Ideally the first row and column should be preserved for the row and column header. But do we need a separate distinction for headers ? (Eg showing header in diff background color or some highlighter how miro does it).
 
-I think the users will be able to style the headers differently once we have support for wyswyg editor, so till then lets keep it simple
+I think the users will be able to style the headers differently once we have support for wyswyg editor, so till then lets keep it simple.
+
+## Questions
+
+- Should the `cells` in the above structure be actual text elements or virtual elements which are just rendered on canvas but physically they don't exist in json? This will definately simplify the data structure, however there are some unknowns listed below.
+
+- With above approach of virtual elements, how will impact the overall performance of interacting with tables since we heavily rely on actual elements ?
+- How will this impact collaboration ? We may need a custom logic for tables?
+
+
+# Adoption strategy
+
+- If we implement this proposal, how will existing Excalidraw users adopt it?
+
+This is a new feature so adoption should be straight forward and they will be using it as needed.
+
+- Is this a breaking change? If yes how are migrating the existing Excalidraw users ?
+
+No this is not a breaking change (unless we change some existing implementation) so hopefully no migration will be needed.
