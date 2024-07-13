@@ -34,7 +34,6 @@ Below is the sample JSON representation of a `table` element
   "cells": [
     {
       "id": "cell-1",
-      "tableId":"table-id",
       "row": 0,
       "column": 0,
       "x": 100,
@@ -45,7 +44,6 @@ Below is the sample JSON representation of a `table` element
     },
     {
       "id": "cell-2",
-      "tableId":"table-id",
       "x": 200,
       "y": 100,
       "row": 0,
@@ -56,7 +54,6 @@ Below is the sample JSON representation of a `table` element
     },
     {
       "id": "cell-3",
-      "tableId":"table-id",
       "x": 100,
       "y": 150,
       "row": 1,
@@ -67,7 +64,6 @@ Below is the sample JSON representation of a `table` element
     },
     {
       "id": "cell-4",
-      "tableId":"table-id",
       "x": 220,
       "y": 150,
       "row": 1,
@@ -98,12 +94,9 @@ Below is the sample JSON representation of a `table` element
 ```
 
 A table will have a `title` as well and the count of `rows` and `columns` as well.
-Each cell has a `tableId` to identify the `table` which it is connected to when interacting with the cell eg resizing, typing text etc.
 
 The table consists of `cells` defining the content of each cell.
 Each cell has an `id`, `x`, `y` and dimensions. Since when resizing the width and height of cells can be altered hence recording the dimensions of each cell.
-
-Each cell is connected to its table by `tableId`.
 
 The `row` and `column` helps in identifying the row and column indexes of the cell.
 
@@ -128,7 +121,7 @@ Additionally if a user clicks on the cell stroke (width / height) should be adju
 But since this would be internally using rectangles so this should be possible without custom code.
 What we need to support is allow the width / height of all cells in that row /column when any one of them is moved.
 
-Since the table is not just a single element but a collection of different elements, whenever there is an operation eg moving , resizing, we need to update all the children of the table (basically every cell). And all the cells can be identified with the `tableId`.
+Since the table is not just a single element but a collection of different elements, whenever there is an operation eg moving , resizing, we need to update all the children of the table (basically every cell).
 
 ## Supporting row and column headers
 
@@ -142,7 +135,6 @@ I think the users will be able to style the headers differently once we have sup
 
 - With above approach of virtual elements, how will impact the overall performance of interacting with tables since we heavily rely on actual elements ?
 - How will this impact collaboration ? We may need a custom logic for tables?
-
 
 # Adoption strategy
 
