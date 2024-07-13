@@ -1,10 +1,18 @@
-* Start Date: 2024-07-13
-* Referenced Issues: https://github.com/excalidraw/excalidraw/issues/4847
-* Implementation PR: (leave this empty)
+- Start Date: 2024-07-13
+- Referenced Issues: https://github.com/excalidraw/excalidraw/issues/4847
+- Implementation PR: (leave this empty)
 
-# Supporting Tables in Excalidraw
+# Summary
 
-Tables is nothing but a collection of Text Containers next to each other in form of a grid with `x` rows and `y` columns.
+Once this feature is implemented the users will be able to use tables in excalidraw.
+
+# Motivation
+
+Tables are one of the most heavily requested features in Excalidraw for past few years. This will also be a very useful feature as well hence we should consider pushing it out soon.
+
+# Detailed Design
+
+Tables are nothing but a collection of Text Containers next to each other in form of a grid with `x` rows and `y` columns.
 
 Lets see how the data structure of table element look like.
 
