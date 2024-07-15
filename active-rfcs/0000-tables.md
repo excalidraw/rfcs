@@ -4,7 +4,7 @@
 
 # Summary
 
-Once this feature is implemented the users will be able to use tables in excalidraw.
+Once this feature is implemented the users will be able to use tables in excalidraw. The `table` will be added to the shapes toolbar similar to other tools.
 
 # Motivation
 
@@ -125,7 +125,7 @@ Since the table is not just a single element but a collection of different eleme
 
 ## Supporting row and column headers
 
-Ideally the first row and column should be preserved for the row and column header. But do we need a separate distinction for headers ? (Eg showing header in diff background color or some highlighter how miro does it).
+Ideally the `first` `row` and `column` should be preserved for the `row` and `column` `header`. But do we need a separate distinction for headers ? (Eg showing header in diff background color or some highlighter how miro does it).
 
 I think the users will be able to style the headers differently once we have support for wyswyg editor, so till then lets keep it simple.
 
@@ -220,7 +220,7 @@ This would simplify the data structure and reduce the hierarchy, thus helping in
 
 ## For Virtual Cell Elements
 
-When `cells` are virtual elements which are just rendered on canvas but physically they don't exist in json? This will definately simplify the data structure, however there are some unknowns listed below.
+When `cells` are virtual elements which are just rendered on canvas but physically they don't exist as separate text elements? This will definately simplify the data structure, however there are some unknowns listed below which needs to be evaluated before we move with this approach.
 
 - With above approach of virtual elements, how will impact the overall performance of interacting with tables since we heavily rely on actual elements ? 
 - Need to verify if this approach is feasable with current state of TextWYSIWYG
