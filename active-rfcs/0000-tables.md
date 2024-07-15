@@ -129,11 +129,101 @@ Ideally the first row and column should be preserved for the row and column head
 
 I think the users will be able to style the headers differently once we have support for wyswyg editor, so till then lets keep it simple.
 
+## Alternatives
+
+In the above approach the text elements with `containerId` as `cell id` will exists in the `json`. This means there will be 4 separate `text` elements in the `json`.
+
+Here is an alternative version - Having `cells` as virtual text elements instead of actual text elements.
+
+```js
+{
+  "id": "table-id",
+  "type": "table",
+  "x": 100,
+  "y": 100,
+  "title": "Table Title",
+  "rows": 2,
+  "columns": 2,
+  "cells": [
+    {
+      "id": "cell-1",
+      "row": 0,
+      "column": 0,
+      "x": 100,
+      "y": 100,
+      "width": 100,
+      "height": 50,
+      "text":"Cell 1",
+      "fontSize": 16;
+      "fontFamily": 1;
+
+    },
+    {
+      "id": "cell-2",
+      "x": 200,
+      "y": 100,
+      "row": 0,
+      "column": 1,
+      "width": 150,
+      "height": 50,
+      "text":"Cell 2",
+      "fontSize": 16;
+      "fontFamily": 1;
+    },
+    {
+      "id": "cell-3",
+      "x": 100,
+      "y": 150,
+      "row": 1,
+      "column": 0,
+      "width": 120,
+      "height": 60,
+      "text":"Cell 3",
+      "fontSize": 16;
+      "fontFamily": 1;
+    },
+    {
+      "id": "cell-4",
+      "x": 220,
+      "y": 150,
+      "row": 1,
+      "column": 1,
+      "width": 130,
+      "height": 60,
+      "text":"Cell 4",
+      "fontSize": 16;
+      "fontFamily": 1;
+    }
+  ],
+  "angle": 0,
+  "strokeColor": "#000000",
+  "backgroundColor": "transparent",
+  "fillStyle": "hachure",
+  "strokeWidth": 1,
+  "strokeStyle": "solid",
+  "roughness": 0,
+  "opacity": 100,
+  "groupIds": [],
+  "seed": 1,
+  "version": 1,
+  "versionNonce": 1,
+  "isDeleted": false,
+  "boundElements": null,
+  "link": null,
+  "locked": false
+}
+```
+As you can see above the `cells` will contain all the attributes (only some of text attributes are shown above) and at the time of rendering these text elements will be drawn, however we won't be storing the text elements as separate elements.
+This would simplify the data structure and reduce the hierarchy, thus helping in better maintainance
+
 ## Questions
 
-- Should the `cells` in the above structure be actual text elements or virtual elements which are just rendered on canvas but physically they don't exist in json? This will definately simplify the data structure, however there are some unknowns listed below.
+## For Virtual Cell Elements
 
-- With above approach of virtual elements, how will impact the overall performance of interacting with tables since we heavily rely on actual elements ?
+When `cells` are virtual elements which are just rendered on canvas but physically they don't exist in json? This will definately simplify the data structure, however there are some unknowns listed below.
+
+- With above approach of virtual elements, how will impact the overall performance of interacting with tables since we heavily rely on actual elements ? 
+- Need to verify if this approach is feasable with current state of TextWYSIWYG
 - How will this impact collaboration ? We may need a custom logic for tables?
 
 # Adoption strategy
@@ -145,3 +235,4 @@ This is a new feature so adoption should be straight forward and they will be us
 - Is this a breaking change? If yes how are migrating the existing Excalidraw users ?
 
 No this is not a breaking change (unless we change some existing implementation) so hopefully no migration will be needed.
+```
