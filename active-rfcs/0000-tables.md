@@ -512,11 +512,3 @@ This is a new feature so adoption should be straight forward and they will be us
 - Is this a breaking change? If yes how are migrating the existing Excalidraw users ?
 
 No this is not a breaking change (unless we change some existing implementation) so hopefully no migration will be needed.
-
-```
-
-```
-
-```
-
-```
