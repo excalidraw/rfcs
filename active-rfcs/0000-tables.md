@@ -232,6 +232,8 @@ When `cells` are virtual elements which are just rendered on canvas but physical
 - Need to verify if this approach is feasable with current state of TextWYSIWYG
 - How will this impact collaboration ? We may need a custom logic for tables?
 
+Yes we will need write custom logic to handle reconcilation in `tables`, mainly attaching `timestamp` to each cell and writing a custom algorithm to resolve the conflicts and ensuring latest changes are applied to all the collaborators.
+
 ### Storing cells with respect to rows to ease reordering of rows and columns
 
 In the suggested approach, reordering might get difficult as we will have to keep track of which cells should be swapped - lets say if we swap row 1 with row 3, we will have to iterate through all the cells and check which cells have `row` attribute set to `row 1` and swap them with cells with `row` attribute set to `row 3`.
@@ -323,7 +325,7 @@ This way the swapping becomes easier since we need not filter the cells based on
 
 - This approach definately will ease the swapping and handling of rows and columns. How do we track changes when columns or rows are reordered ?
 
-We can add an `order` attribute which helps in tracking the changes of the cells and each cell can have a `timestamp` attribute as well to determine the latest changes.
+We can add an `order` attribute which helps in maintaining the correct sequence of `rows` and `columns` and `lastUpdated` helps in resolving conflicts in reordering.
 
 ```js
 {
@@ -334,19 +336,18 @@ We can add an `order` attribute which helps in tracking the changes of the cells
   "title": "Table Title",
   "rows": [{
     "id": "row-1",
+    "order": 1,
+    "lastUpdated": 1633257617000
     "cells": [{
       "id": "cell-1",
-      "order": 1,
       "x": 100,
       "y": 100,
       "width": 100,
       "height": 50,
       "boundElements": [{id: "text-1", type: "text"}],
-      "timestamp": 1633257616000
     },
     {
       "id": "cell-2",
-      "order": 2,
       "x": 200,
       "y": 100,
       "row": 0,
@@ -354,31 +355,27 @@ We can add an `order` attribute which helps in tracking the changes of the cells
       "width": 150,
       "height": 50,
       "boundElements": [{id: "text-2", type: "text"}],
-      "timestamp": 1633257617000
     }
   ]},
   {
     "id": "row-2",
+    "order": 2,
+    "lastUpdated": 1633257617000
     "cells:[{
       "id": "cell-3",
-      "order": 1,
       "x": 100,
       "y": 150,
       "width": 120,
       "height": 60,
       "boundElements": [{id: "text3", type: "text"}],
-      "timestamp": 1633257618000
-
     },
     {
       "id": "cell-4",
-      "order": 2,
       "x": 220,
       "y": 150,
       "width": 130,
       "height": 60,
       "boundElements": [{id: "text-4", type: "text"}],
-      "timestamp": 1633257619000
 
     }
   }],
@@ -386,13 +383,11 @@ We can add an `order` attribute which helps in tracking the changes of the cells
     "id": "column-1",
     "order": 1,
     "title": "Column 1",
-     "timestamp": 1633257621000
   },
   {
     "id": "column-2",
     "order": 2,
     "title": "Column 2",
-    "timestamp": 1633257622000
   }],
   "angle": 0,
   "strokeColor": "#000000",
@@ -412,12 +407,101 @@ We can add an `order` attribute which helps in tracking the changes of the cells
   "locked": false
 }
 ```
-We will need to write a custom reconcilation to reconcile correctly for this case as we are adding extra attributes hence a custom approach.
 
-When there are updates we will compare the order and if order is updated, it means rows and columns were swapped and then compare the timestamp as well to determine the latest changes.
+We will need to write a custom reconcilation to reconcile correctly for this case.
+
+When there are updates we will compare the order and if order is updated, it means rows and columns were reordered and compare the `lastUpdated` as well to ensure most recent update is applied to all the collaborators.
+
+Additionally each cell will also have a `timestamp` attribute if we consider virtual text elements (as mentioned in previous approach) to resolve conflicts when content updated on same cell.
+
+```js
+{
+  "id": "table-id",
+  "type": "table",
+  "x": 100,
+  "y": 100,
+  "title": "Table Title",
+  "rows": [{
+    "id": "row-1",
+    "order": 1,
+    "lastUpdated": 1633257617000
+    "cells": [{
+      "id": "cell-1",
+      "x": 100,
+      "y": 100,
+      "width": 100,
+      "height": 50,
+      "content": "Cell-11",
+      "timestamp": 1633257618000
+    },
+    {
+      "id": "cell-2",
+      "x": 200,
+      "y": 100,
+      "row": 0,
+      "column": 1,
+      "width": 150,
+      "height": 50,
+      "content": "Cell-12",
+      "timestamp": 1633257619000
+    }
+  ]},
+  {
+    "id": "row-2",
+    "order": 2,
+    "lastUpdated": 1633257620000
+    "cells:[{
+      "id": "cell-3",
+      "x": 100,
+      "y": 150,
+      "width": 120,
+      "height": 60,
+      "content": "Cell-21",
+      "timestamp": 1633257621000
+    },
+    {
+      "id": "cell-4",
+      "x": 220,
+      "y": 150,
+      "width": 130,
+      "height": 60,
+      "content": "Cell-22",
+      "timestamp": 1633257617000
+
+    }
+  }],
+  "columns:": [{
+    "id": "column-1",
+    "order": 1,
+    "title": "Column 1",
+    "timestamp": 1633257617000
+  },
+  {
+    "id": "column-2",
+    "order": 2,
+    "title": "Column 2",
+    "timestamp": 1633257617000
+  }],
+  "angle": 0,
+  "strokeColor": "#000000",
+  "backgroundColor": "transparent",
+  "fillStyle": "hachure",
+  "strokeWidth": 1,
+  "strokeStyle": "solid",
+  "roughness": 0,
+  "opacity": 100,
+  "groupIds": [],
+  "seed": 1,
+  "version": 1,
+  "versionNonce": 1,
+  "isDeleted": false,
+  "boundElements": null,
+  "link": null,
+  "locked": false
+}
+```
 
 - Will this work for multiplayer undo/redo ?
-
 
 # Adoption strategy
 
@@ -428,6 +512,8 @@ This is a new feature so adoption should be straight forward and they will be us
 - Is this a breaking change? If yes how are migrating the existing Excalidraw users ?
 
 No this is not a breaking change (unless we change some existing implementation) so hopefully no migration will be needed.
+
+```
 
 ```
 
