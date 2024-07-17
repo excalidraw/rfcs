@@ -325,7 +325,7 @@ This way the swapping becomes easier since we need not filter the cells based on
 
 - This approach definately will ease the swapping and handling of rows and columns. How do we track changes when columns or rows are reordered ?
 
-We can add an `order` attribute which helps in maintaining the correct sequence of `rows` and `columns` and `lastUpdated` helps in resolving conflicts in reordering.
+We can add an `index` attribute which helps in maintaining the correct sequence of `rows` and `columns` and `lastUpdated` helps in resolving conflicts in reordering.
 
 ```js
 {
@@ -336,7 +336,7 @@ We can add an `order` attribute which helps in maintaining the correct sequence 
   "title": "Table Title",
   "rows": [{
     "id": "row-1",
-    "order": 1,
+    "index": 0,
     "lastUpdated": 1633257617000
     "cells": [{
       "id": "cell-1",
@@ -359,7 +359,7 @@ We can add an `order` attribute which helps in maintaining the correct sequence 
   ]},
   {
     "id": "row-2",
-    "order": 2,
+    "index": 1,
     "lastUpdated": 1633257617000
     "cells:[{
       "id": "cell-3",
@@ -381,12 +381,12 @@ We can add an `order` attribute which helps in maintaining the correct sequence 
   }],
   "columns:": [{
     "id": "column-1",
-    "order": 1,
+    "index": 0,
     "title": "Column 1",
   },
   {
     "id": "column-2",
-    "order": 2,
+    "index": 1,
     "title": "Column 2",
   }],
   "angle": 0,
@@ -410,7 +410,7 @@ We can add an `order` attribute which helps in maintaining the correct sequence 
 
 We will need to write a custom reconcilation to reconcile correctly for this case.
 
-When there are updates we will compare the order and if order is updated, it means rows and columns were reordered and compare the `lastUpdated` as well to ensure most recent update is applied to all the collaborators.
+When there are updates we will compare the `index` and if `index` is updated, it means rows and columns were reordered and compare the `lastUpdated` as well to ensure most recent update is applied to all the collaborators.
 
 Additionally each cell will also have a `timestamp` attribute if we consider virtual text elements (as mentioned in previous approach) to resolve conflicts when content updated on same cell.
 
@@ -423,7 +423,7 @@ Additionally each cell will also have a `timestamp` attribute if we consider vir
   "title": "Table Title",
   "rows": [{
     "id": "row-1",
-    "order": 1,
+    "index": 0,
     "lastUpdated": 1633257617000
     "cells": [{
       "id": "cell-1",
@@ -448,7 +448,7 @@ Additionally each cell will also have a `timestamp` attribute if we consider vir
   ]},
   {
     "id": "row-2",
-    "order": 2,
+    "index": 1,
     "lastUpdated": 1633257620000
     "cells:[{
       "id": "cell-3",
@@ -472,13 +472,13 @@ Additionally each cell will also have a `timestamp` attribute if we consider vir
   }],
   "columns:": [{
     "id": "column-1",
-    "order": 1,
+    "index": 0,
     "title": "Column 1",
     "timestamp": 1633257617000
   },
   {
     "id": "column-2",
-    "order": 2,
+    "index": 1,
     "title": "Column 2",
     "timestamp": 1633257617000
   }],
@@ -512,6 +512,8 @@ This is a new feature so adoption should be straight forward and they will be us
 - Is this a breaking change? If yes how are migrating the existing Excalidraw users ?
 
 No this is not a breaking change (unless we change some existing implementation) so hopefully no migration will be needed.
+
+```
 
 ```
 
