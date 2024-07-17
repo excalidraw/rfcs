@@ -129,7 +129,14 @@ Ideally the `first` `row` and `column` should be preserved for the `row` and `co
 
 I think the users will be able to style the headers differently once we have support for wyswyg editor, so till then lets keep it simple.
 
+## Reordering rows and columns
+
+This is a powerful feature and good to have. Users can drag the rows and columns and reorder them on the UI.
+However I think in the first release we might not want to support this and add this as an enhancement in future releases.
+
 ## Alternatives
+
+### Virtual Text Elements
 
 In the above approach the text elements with `containerId` as `cell id` will exists in the `json`. This means there will be 4 separate `text` elements in the `json`.
 
@@ -213,18 +220,106 @@ Here is an alternative version - Having `cells` as virtual text elements instead
   "locked": false
 }
 ```
+
 As you can see above the `cells` will contain all the attributes (only some of text attributes are shown above) and at the time of rendering these text elements will be drawn, however we won't be storing the text elements as separate elements.
 This would simplify the data structure and reduce the hierarchy, thus helping in better maintainance
 
-## Questions
-
-## For Virtual Cell Elements
+#### Questions
 
 When `cells` are virtual elements which are just rendered on canvas but physically they don't exist as separate text elements? This will definately simplify the data structure, however there are some unknowns listed below which needs to be evaluated before we move with this approach.
 
-- With above approach of virtual elements, how will impact the overall performance of interacting with tables since we heavily rely on actual elements ? 
+- With above approach of virtual elements, how will impact the overall performance of interacting with tables since we heavily rely on actual elements ?
 - Need to verify if this approach is feasable with current state of TextWYSIWYG
 - How will this impact collaboration ? We may need a custom logic for tables?
+
+
+### Storing columns with respect to rows to ease reordering of rows and columns
+
+In the suggested approach, reordering might get difficult as we will have to keep track of which cells should be swapped - lets say if we swap row 1 with row 3, we will have to iterate through all the cells and check which cells have `row` attribute set to `row 1` and swap them with cells with `row` attribute set to `row 3`.
+
+Here is an alternate approach to ease the above process
+
+```js
+{
+  "id": "table-id",
+  "type": "table",
+  "x": 100,
+  "y": 100,
+  "title": "Table Title",
+  "rows": 2,
+  "columns": 2,
+  "rows": [{
+    "id": "row-1",
+    "columns": [{
+      "id": "cell-1",
+      "x": 100,
+      "y": 100,
+      "width": 100,
+      "height": 50,
+      "boundElements": [{id: "text-1", type: "text"}]
+    },
+    {
+      "id": "cell-2",
+      "x": 200,
+      "y": 100,
+      "row": 0,
+      "column": 1,
+      "width": 150,
+      "height": 50,
+      "boundElements": [{id: "text-2", type: "text"}]
+    }
+  ]},
+  {
+    "id": "row-2",
+    "columns:[{
+      "id": "cell-3",
+      "x": 100,
+      "y": 150,
+      "width": 120,
+      "height": 60,
+      "boundElements": [{id: "text3", type: "text"}]
+    },
+    {
+      "id": "cell-4",
+      "x": 220,
+      "y": 150,
+      "width": 130,
+      "height": 60,
+      "boundElements": [{id: "text-4", type: "text"}]
+    }
+  }],
+  "angle": 0,
+  "strokeColor": "#000000",
+  "backgroundColor": "transparent",
+  "fillStyle": "hachure",
+  "strokeWidth": 1,
+  "strokeStyle": "solid",
+  "roughness": 0,
+  "opacity": 100,
+  "groupIds": [],
+  "seed": 1,
+  "version": 1,
+  "versionNonce": 1,
+  "isDeleted": false,
+  "boundElements": null,
+  "link": null,
+  "locked": false
+}
+
+```
+
+As you can see now all the data related to rows stays together and whenever the rows are swapped, we can swapped the entire row between `source` and `destination` index.
+
+Whenever the columns are swapped, we will need to swap the cells of the `source` index in each `row` with the `destination` index in each `row`.
+
+This way the swapping becomes easier since we need not filter the cells based on row / column positions.
+
+#### Questions
+
+- This approach definately will ease the swapping and handling of rows and columns. Will the collaboration be impacted ? We will need to write an algorithm to handle the reconcilation for tables ?
+
+- Do we need `rows` and `columns` attribute separately as well ? Since these can be calculated by `rows.length` and `columns.length`.
+
 
 # Adoption strategy
 
@@ -235,4 +330,7 @@ This is a new feature so adoption should be straight forward and they will be us
 - Is this a breaking change? If yes how are migrating the existing Excalidraw users ?
 
 No this is not a breaking change (unless we change some existing implementation) so hopefully no migration will be needed.
+
+```
+
 ```
