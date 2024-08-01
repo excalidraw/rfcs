@@ -33,7 +33,7 @@ Add examples to explain the approach as well.
 
 Why should we _not_ do this? Please consider:
 
-- implementation cost, both in term of code size and complexity
+- implementation cost, both in terms of code size and complexity
 - whether the proposed feature can be implemented in user space
 - the impact on the NPM Package API
 - integration of this feature with other existing and planned features
