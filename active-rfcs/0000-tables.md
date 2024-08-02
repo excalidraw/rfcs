@@ -193,7 +193,7 @@ The `index` attribute in `row` and `column` will be used to resolve conflicts wh
 
 ## Cells as array of elements
 
-```js
+```json
 {
   "id": "table-id",
   "type": "table",
@@ -211,7 +211,7 @@ The `index` attribute in `row` and `column` will be used to resolve conflicts wh
       "y": 100,
       "width": 100,
       "height": 50,
-      "boundElements": [{id: "text-1", type: "text"}]
+      "boundElements": [{"id": "text-1", "type": "text"}]
     },
     {
       "id": "cell-2",
@@ -221,7 +221,7 @@ The `index` attribute in `row` and `column` will be used to resolve conflicts wh
       "column": 1,
       "width": 150,
       "height": 50,
-       "boundElements": [{id: "text-2", type: "text"}]
+       "boundElements": [{"id": "text-2", "type": "text"}]
     },
     {
       "id": "cell-3",
@@ -231,7 +231,7 @@ The `index` attribute in `row` and `column` will be used to resolve conflicts wh
       "column": 0,
       "width": 120,
       "height": 60,
-      "boundElements": [{id: "text3", type: "text"}]
+      "boundElements": [{"id": "text3", "type": "text"}]
     },
     {
       "id": "cell-4",
@@ -241,7 +241,7 @@ The `index` attribute in `row` and `column` will be used to resolve conflicts wh
       "column": 1,
       "width": 130,
       "height": 60,
-      "boundElements": [{id: "text-4", type: "text"}]
+      "boundElements": [{"id": "text-4", "type": "text"}]
     }
   ],
   "angle": 0,
@@ -332,11 +332,11 @@ Here is an alternate approach to ease the above process.
   }],
   "columns:": [{
     "id": "column-1",
-    "title": "Column 1",
+    "title": "Column 1"
   },
   {
     "id": "column-2",
-    "title": "Column 2",
+    "title": "Column 2"
   }],
   "angle": 0,
   "strokeColor": "#000000",
@@ -380,7 +380,7 @@ We can add an `index` attribute which helps in maintaining the correct sequence 
   "rows": [{
     "id": "row-1",
     "index": 0,
-    "lastUpdated": 1633257617000
+    "lastUpdated": 1633257617000,
     "cells": [{
       "id": "cell-1",
       "x": 100,
@@ -424,12 +424,12 @@ We can add an `index` attribute which helps in maintaining the correct sequence 
   "columns:": [{
     "id": "column-1",
     "index": 0,
-    "title": "Column 1",
+    "title": "Column 1"
   },
   {
     "id": "column-2",
     "index": 1,
-    "title": "Column 2",
+    "title": "Column 2"
   }],
   "angle": 0,
   "strokeColor": "#000000",
@@ -588,9 +588,11 @@ hence not going ahead with this structure.
       - Timezone differences - Different clients may have different timezones leading to inconsistencies
       - Network latency - Different clients may have different network latencies leading to inconsistencies
    Hence client generated timestamps are not reliable for reconciliation. However, if we use server generated timestamps, they can also have network latency as well so not reliable as well.
+   
    Hence, the way we do it now in production using `version` and `versionNonce` looks like the best way to handle reconciliation.
       - `version` - is the version of the element, and it increments for every update
       - `versionNonce` - is the nonce (random number) which is generated for every update
+   
    Here is how it works
       - When a client updates an element, it increments the `version` and generates a new `versionNonce` for that element
       - When the client receives an update from the server, it compares the local `version` and the remote elements `version`, whichever is higher gets preference
