@@ -32,8 +32,6 @@ Below is the sample JSON representation of a `table` element
   "cells": {
     "cell-11": {
       "id": "cell-11",
-      "width": 100,
-      "height": 50,
       "content": "Cell-11",
       "rowId": "row-1",
       "columnId": "col-1",
@@ -43,8 +41,6 @@ Below is the sample JSON representation of a `table` element
       "id": "cell-12",
       "row": 0,
       "column": 1,
-      "width": 150,
-      "height": 50,
       "content": "Cell-12",
       "rowId": "row-1",
       "columnId": "col-2",
@@ -52,8 +48,6 @@ Below is the sample JSON representation of a `table` element
     },
     "cell-21": {
       "id": "cell-21",
-      "width": 120,
-      "height": 60,
       "content": "Cell-21",
       "rowId": "row-2",
       "columnId": "col-1",
@@ -78,7 +72,8 @@ Below is the sample JSON representation of a `table` element
         "cell-12"
       ],
       "lastUpdated": 1633257617000,
-      "isDeleted": false
+      "isDeleted": false,
+      "height": 50
     },
     "row-2": {
       "id": "row-2",
@@ -88,7 +83,8 @@ Below is the sample JSON representation of a `table` element
         "cell-22"
       ],
       "lastUpdated": 1633257620000,
-      "isDeleted": false
+      "isDeleted": false,
+      "height": 60
     }
   },
   "columns:": {
@@ -97,14 +93,16 @@ Below is the sample JSON representation of a `table` element
       "index": 0,
       "title": "Column 1",
       "timestamp": 1633257617000,
-      "isDeleted": false
+      "isDeleted": false,
+      "width": 100
     },
     "column-2": {
       "id": "column-2",
       "index": 1,
       "title": "Column 2",
       "timestamp": 1633257617000,
-      "isDeleted": false
+      "isDeleted": false,
+      "width": 150
     }
   },
   "angle": 0,
@@ -136,7 +134,6 @@ Each `cell` has the :point_down: attributes
 * `content` - the text content of the cell.
 * `timestamp` - to keep track of the last update timestamp. This will be used in reconciliation to resolve conflicts when cells are reordered.
 * `rowId` and `columnId` - to keep track of the row and column it belongs to. This can be useful for quick lookup for updates, however will be removed if not needed.
-* `width` and `height` - to keep track of the dimensions of the cell. This will be used in resizing the cell as each cell can have a different dimension
 
 ### row
 Each `row` has the :point_down: attributes
@@ -145,6 +142,7 @@ Each `row` has the :point_down: attributes
 * `cellIds` - which is an array of cell ids. This helps in keeping track of the cells in the row.
 * `lastUpdated` - to keep track of the last update timestamp. This will be used in reconciliation to resolve conflicts when rows are reordered.
 * `isDeleted` - to keep track of whether the row is deleted or not.
+* `height` - to keep track of the height of the row.
 
 ### column
 Each `column` has the :point_down: attributes
@@ -153,6 +151,7 @@ Each `column` has the :point_down: attributes
 * `title` - the name of the column.
 * `lastUpdated` - to keep track of the last update timestamp. This will be used in reconciliation to resolve conflicts when columns are reordered.
 * `isDeleted` - to keep track of whether the column is deleted or not.
+* `width` - to keep track of the width of the column.
 
 
 ## Adding and Deleting rows / columns
@@ -656,6 +655,11 @@ This would simplify the data structure and reduce the hierarchy, thus helping in
 3. Do we need per property syncing?
 
    - May be, to ensure that we don't ignore the changes made by other collaborators e.g.- if a user A made a text change and a user B made a dimension change to the same cell, we need to ensure that both changes are applied.
+4. Do we need `width` and `height` for each cell?
+
+   - Each cell can have different dimensions but when a dimension is updated, lets say if cell at (1,2) has increased width by `x`, this means the entire column width gets impacted by same amount `x`
+   - Similarly, if cell at (1,2) has increased height by `y`, this means the entire row height gets impacted by same amount `y`
+   - This means that `width` and `height` could be uplifted to the respective `column` and `row` attributes.
 
 # Adoption strategy
 
